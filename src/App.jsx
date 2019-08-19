@@ -6,7 +6,7 @@ import Form from './Form.jsx';
 import Edit from './Edit.jsx';
 import './App.css';
 
-var urlPrefix = 'http://localhost:4000/api';
+var urlPrefix = 'http://localhost:3001/api';
 
 class App extends Component {
   constructor(props){
@@ -50,14 +50,14 @@ class App extends Component {
   }
 
   addProjects = (data) => {
-    axios.post(urlPrefix+'/projects',data)
+    axios.post(urlPrefix+'/projects/',data)
     .then(res => {
       this.getProjects();
     })
   }
 
   deleteProjects = (id) => {
-    axios.delete(urlPrefix+'/projects'+id)
+    axios.delete(urlPrefix+'/projects/'+id)
     .then(res => {
       this.getProjects();
     })
@@ -106,7 +106,7 @@ class App extends Component {
           <div className="header"><i onClick={() => this.setActiveView('projects')} className="fas fa-times"></i></div>
           <div className="main">
             <h2>Add Project</h2>
-              <Form addProject={this.addProject} setActiveView={this.setActiveView}/>
+              <Form addProjects={this.addProjects} setActiveView={this.setActiveView}/>
           </div>
         </View>
 
