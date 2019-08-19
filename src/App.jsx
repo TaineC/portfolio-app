@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import View from './View.jsx';
 import Project from './Project.jsx';
+import Form from './Form.jsx';
+import Edit from './Edit.jsx';
 import './App.css';
 
 var urlPrefix = 'http://localhost:4000/api';
@@ -23,12 +25,20 @@ class App extends Component {
           name: 'Start Fire',
           description: 'My best project',
         },
-      ]
+      ],
+      projectToUpdate: null,
     };
   }
 
   setActiveView = (view) => {
     this.setState({activeView: view});
+  }
+
+  setProjectToUpdate = (id) => {
+    var foundProject = this.state.projects.find((project) => {
+      return project.id === id;
+    });
+    this.setState({projectToUpdate: foundProject});
   }
 
   getProjects = () => {
@@ -39,16 +49,25 @@ class App extends Component {
     });
   }
 
-  addProject = (data) => {
-
+  addProjects = (data) => {
+    axios.post(urlPrefix+'/projects',data)
+    .then(res => {
+      this.getProjects();
+    })
   }
 
-  deleteProject = (id) => {
-
+  deleteProjects = (id) => {
+    axios.delete(urlPrefix+'/projects'+id)
+    .then(res => {
+      this.getProjects();
+    })
   }
 
-  updateProject = (id,data) => {
-
+  updateProjects = (id,data) => {
+    axios.put(urlPrefix+'/projects/'+id,data)
+    .then(res => {
+      this.getProjects();
+    })
   }
 
   componentDidMount(){
@@ -61,7 +80,7 @@ class App extends Component {
       <div className="app">
       
         <View viewName="projects" activeView={this.state.activeView} className="color1">
-          <div className="header"><i onClick={() => this.setActiveView('nav')} className="fas fa-bars"></i></div>
+          <div className="header"><i onClick={() => this.setActiveView('add-project')} className="fas fa-bars"></i></div>
           <div className="main">
             <h2>Projects</h2>
               {
@@ -70,6 +89,9 @@ class App extends Component {
                   var props = {
                     ...item,
                     key: item.id,
+                    deleteProjects: this.deleteProjects,
+                    setActiveView: this.setActiveView,
+                    setProjectToUpdate: this.setProjectToUpdate,
                   };
                   
                   return(
@@ -84,35 +106,17 @@ class App extends Component {
           <div className="header"><i onClick={() => this.setActiveView('projects')} className="fas fa-times"></i></div>
           <div className="main">
             <h2>Add Project</h2>
-              <form>
-                <div className="form-group">
-                  <label htmlFor="name-input">Name</label>
-                  <input type="text" className="form-control" name="name-input" id="name-input" placeholder="Enter project name"/>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="name-input">Description</label>
-                  <input type="text" className="form-control" name="description-input" id="description-input" placeholder="Enter project description"/>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="name-input">Photo</label>
-                  <input type="text" className="form-control" name="photo-input" id="photo-input" value="project.jpg"/>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="type-input">Type</label>
-                  <select className="form-control" name="type-input" id="type-input">
-                    <option value="1">Painting</option>
-                    <option value="2">Sculpture</option>
-                    <option value="3">Digital</option>
-                  </select>
-                </div>
-
-                <button type="submit" className="btn btn-primary">Add</button>
-              </form>
+              <Form addProject={this.addProject} setActiveView={this.setActiveView}/>
           </div>
         </View>
 
+        <View viewName="edit-project" activeView={this.state.activeView} className="color3">
+          <div className="header"><i onClick={() => this.setActiveView('projects')} className="fas fa-times"></i></div>
+          <div className="main">
+            <h2>Edit Project</h2>
+              <Edit {...this.state.projectToUpdate} updateProjects={this.updateProjects} setActiveView={this.setActiveView}/>
+          </div>
+        </View>
 
 
         <View viewName="nav" activeView={this.state.activeView} className="color4">

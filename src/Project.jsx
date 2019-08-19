@@ -6,6 +6,18 @@ class Project extends Component {
     super(props);
   }
 
+  handleDeleteClick = () => {
+    var {deleteProjects, id} = this.props;
+    deleteProjects(id);
+  }
+
+  handleEditClick = () => {
+    var {setActiveView, setProjectToUpdate, id} = this.props;
+
+    setProjectToUpdate(id);
+    setActiveView('edit-project');
+  }
+
   render(){
 
     var {name, description} = this.props
@@ -18,8 +30,8 @@ class Project extends Component {
             <p className="card-text">{description}</p>
             <p>
               <i className="fas fa-heart"></i>
-              <i className="fas fa-edit"></i>
-              <i className="fas fa-trash"></i>
+              <i onClick={this.handleEditClick} className="fas fa-edit"></i>
+              <i onClick={this.handleDeleteClick} className="fas fa-trash"></i>
             </p>
           </div>
       </div>
