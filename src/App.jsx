@@ -14,18 +14,7 @@ class App extends Component {
 
     this.state = {
       activeView: 'projects',
-      projects: [
-        {
-          id: 1,
-          name: 'Build Hut',
-          description: 'My first project',
-        },
-        {
-          id: 2,
-          name: 'Start Fire',
-          description: 'My best project',
-        },
-      ],
+      projects: [],
       projectToUpdate: null,
     };
   }
@@ -80,7 +69,7 @@ class App extends Component {
       <div className="app">
       
         <View viewName="projects" activeView={this.state.activeView} className="color1">
-          <div className="header"><i onClick={() => this.setActiveView('add-project')} className="fas fa-bars"></i></div>
+          <div className="header"><i onClick={() => this.setActiveView('nav')} className="fas fa-bars"></i></div>
           <div className="main">
             <h2>Projects</h2>
               {
