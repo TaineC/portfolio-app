@@ -14,6 +14,7 @@ class View extends Component{
     var data = {
       name: formData.get('name-input'),
       description: formData.get('description-input'),
+      type_id: formData.get('type-input'),
     }
 
     this.props.addProjects(data);

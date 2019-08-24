@@ -15,6 +15,8 @@ class App extends Component {
     this.state = {
       activeView: 'projects',
       projects: [],
+      types: [],
+      currentType: null,
       projectToUpdate: null,
     };
   }
@@ -24,18 +26,31 @@ class App extends Component {
   }
 
   setProjectToUpdate = (id) => {
-    var foundProject = this.state.projects.find((project) => {
-      return project.id === id;
+    var foundProject = this.state.projects.find((item) => {
+      return item.id === id;
     });
     this.setState({projectToUpdate: foundProject});
+  }
+
+  setType = (id) => {
+    var foundType = this.state.types.find((item) => {
+      return item.id == id;
+    });
+    foundType ? this.setState({currentType: foundType}) : this.setState({currentType: null});
   }
 
   getProjects = () => {
     axios.get(urlPrefix+'/projects')
     .then(res => {
-      console.log(res);
       this.setState({projects: res.data});
     });
+  }
+
+  getTypes = () => {
+    axios.get(urlPrefix+'/types')
+    .then(res => {
+      this.setState({types: res.data});
+    })
   }
 
   addProjects = (data) => {
@@ -61,10 +76,24 @@ class App extends Component {
 
   componentDidMount(){
     this.getProjects();
+    this.getTypes();
   }
 
+  typeClick = (e) => {
+    this.setType(e.target.dataset.type);
+    this.setActiveView('projects');
+  }
 
   render(){
+
+    var {currentType, projects} = this.state;
+
+    if(currentType){
+      projects = projects.filter(item =>{
+        return item.type_id == currentType.id;
+      });
+    }
+
     return(
       <div className="app">
       
@@ -73,7 +102,7 @@ class App extends Component {
           <div className="main">
             <h2>Projects</h2>
               {
-                this.state.projects.map((item) => {
+                projects.map((item) => {
                   
                   var props = {
                     ...item,
@@ -112,8 +141,17 @@ class App extends Component {
           <div className="header"><i onClick={() => this.setActiveView('projects')} className="fas fa-times"></i></div>
           <div className="main">
             <ul>
-              <li onClick={() => this.setActiveView('projects')} className="color1"><a href="#">Projects</a></li>
-              <li onClick={() => this.setActiveView('add-project')} className="color2"><a href="#">Add Project</a></li>
+              <li onClick={() => this.setActiveView('projects')} className="color1"><a data-type="null" onClick={this.typeClick} href="#">All Projects</a></li>
+              {
+                this.state.types.map(item => {
+                  return(
+                    <li className="color3">
+                      <a data-type={item.id} onClick={this.typeClick} href="#">{item.name}</a>
+                    </li>
+                  )
+                })
+              }
+              <li onClick={() => this.setActiveView('add-project')} className="color2"><a data-type="null" onClick={this.typeClick} href="#">Add Project</a></li>
             </ul>
           </div>
         </View>
