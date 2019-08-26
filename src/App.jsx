@@ -6,7 +6,7 @@ import Form from './Form.jsx';
 import Edit from './Edit.jsx';
 import './App.css';
 
-var urlPrefix = 'http://localhost:3001/api';
+var urlPrefix = 'http://localhost:4000/api';
 
 class App extends Component {
   constructor(props){
@@ -74,6 +74,12 @@ class App extends Component {
     })
   }
 
+  uploadFile = (formData) => {
+    // var settings = {headers: {'Content-Type': 'multipart/form-data'}}
+    // {settings}-->
+    return axios.post(urlPrefix+'/upload/',formData)
+  }
+
   componentDidMount(){
     this.getProjects();
     this.getTypes();
@@ -100,7 +106,7 @@ class App extends Component {
         <View viewName="projects" activeView={this.state.activeView} className="color1">
           <div className="header"><i onClick={() => this.setActiveView('nav')} className="fas fa-bars"></i></div>
           <div className="main">
-            <h2>Projects</h2>
+            <h2>{currentType ? currentType.name : 'All Projects'}</h2>
               {
                 projects.map((item) => {
                   
@@ -124,7 +130,7 @@ class App extends Component {
           <div className="header"><i onClick={() => this.setActiveView('projects')} className="fas fa-times"></i></div>
           <div className="main">
             <h2>Add Project</h2>
-              <Form addProjects={this.addProjects} setActiveView={this.setActiveView}/>
+              <Form uploadFile={this.uploadFile} addProjects={this.addProjects} setActiveView={this.setActiveView}/>
           </div>
         </View>
 
@@ -132,7 +138,7 @@ class App extends Component {
           <div className="header"><i onClick={() => this.setActiveView('projects')} className="fas fa-times"></i></div>
           <div className="main">
             <h2>Edit Project</h2>
-              <Edit {...this.state.projectToUpdate} updateProjects={this.updateProjects} setActiveView={this.setActiveView}/>
+              <Edit uploadFile={this.uploadFile} {...this.state.projectToUpdate} updateProjects={this.updateProjects} setActiveView={this.setActiveView}/>
           </div>
         </View>
 

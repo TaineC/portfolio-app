@@ -21,7 +21,7 @@ body{
 
 .view{
 	min-height: 100vh;
-	display: none !important;
+	/* display: none !important; */
 }
 
 .active{

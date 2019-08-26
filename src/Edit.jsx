@@ -4,22 +4,37 @@ import './App.css';
 class View extends Component{
   constructor(props){
     super(props);
+    
+    this.state = {
+      fileName: this.props.photo,
+    }
+  }
 
+  handlePhotoChange = (e) => {
+    var formData = new FormData(this.form);
+
+    this.props.uploadFile(formData).then(res => {
+      var fileName = res.data;
+      this.setState({fileName});
+    })
   }
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    var {updateProjects,id,setActiveView} = this.props
+
+    var {id, updateProjects, setActiveView} = this.props;
 
     var formData = new FormData(this.form);
 
-    var data = {
-      name: formData.get('name-input'),
-      description: formData.get('description-input'),
-    }
+      var data = {
+        name: formData.get('name-input'),
+        description: formData.get('description-input'),
+        photo: this.state.fileName,
+        type_id: formData.get('type-input'),
+      }
+      updateProjects(id,data);
+      setActiveView('projects');
 
-    updateProjects(id,data);
-    setActiveView('projects');
   }
 
   render(){
@@ -40,7 +55,7 @@ class View extends Component{
 
           <div className="form-group">
             <label htmlFor="name-input">Photo</label>
-            <input type="text" className="form-control" name="photo-input" id="photo-input" value="project.jpg"/>
+            <input onChange={this.handlePhotoChange} type="file" className="form-control" name="photo-input" id="photo-input"/>
           </div>
 
           <div className="form-group">

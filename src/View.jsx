@@ -9,13 +9,14 @@ class View extends Component{
   render(){
 
     var {className, children, viewName, activeView} = this.props;
-    var newClassName = (viewName == activeView) ? 'view active ' + className : 'view ' + className;
+    // var newClassName = (viewName == activeView) ? 'view active ' + className : 'view ' + className;
+    var newClassName = 'view '+className
 
-    return(
+    return( viewName == activeView) ? (
         <div className={newClassName}>
           {children}
         </div>
-      )
+      ) : null
   }
 }
 

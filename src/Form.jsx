@@ -9,16 +9,25 @@ class View extends Component{
 
   handleFormSubmit = (e) => {
     e.preventDefault();
+
+    var {uploadFile, addProjects, setActiveView} = this.props;
+
     var formData = new FormData(this.form);
 
-    var data = {
-      name: formData.get('name-input'),
-      description: formData.get('description-input'),
-      type_id: formData.get('type-input'),
-    }
+    uploadFile(formData).then(res => {
+      var fileName = res.data;
 
-    this.props.addProjects(data);
-    this.props.setActiveView('projects');
+      var data = {
+        name: formData.get('name-input'),
+        description: formData.get('description-input'),
+        photo: fileName,
+        type_id: formData.get('type-input'),
+      }
+      addProjects(data);
+      setActiveView('projects');
+      
+    })
+
   }
 
   render(){
@@ -37,7 +46,7 @@ class View extends Component{
 
           <div className="form-group">
             <label htmlFor="name-input">Photo</label>
-            <input type="text" className="form-control" name="photo-input" id="photo-input" value="project.jpg"/>
+            <input type="file" className="form-control" name="photo-input" id="photo-input"/>
           </div>
 
           <div className="form-group">
